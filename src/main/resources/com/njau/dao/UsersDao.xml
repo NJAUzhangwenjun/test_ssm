@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.njau.dao.UsersDao">
+	
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.njau.entity.Users">
+		<id column="uid" property="id"/>
+		<result column="email" property="email"/>
+		<result column="username" property="username"/>
+		<result column="password" property="password"/>
+		<result column="phoneNum" property="phoneNum"/>
+		<result column="status" property="status"/>
+		<collection property="roles" resultMap="com.njau.dao.RoleDao.BaseResultMap"/>
+		<!---->
+	
+	</resultMap>
+	
+	<!-- 通用查询结果列 -->
+	<sql id="Base_Column_List">
+        id, email, username, password, phoneNum, status
+    </sql>
+	<insert id="addRoleToUser" parameterType="int">
+		insert into users_role(userId, roleId) values(#{userId},#{roleId})
+	</insert>
+	<select id="selectUsersByUsername" resultMap="BaseResultMap" parameterType="string">
+        select u.id uid, email, username, password, phoneNum, status,
+			   r.id rid,
+			   roleName,
+			   roleDesc
+		from role r
+		  left outer join users_role ur on r.id = ur.roleId
+		  left outer join users u on ur.userId = u.id
+		  where u.username= #{username}
+    </select>
+	
+	<select id="findById" parameterType="int" resultMap="BaseResultMap">
+		select
+		  u.id uid, email, username, password, phoneNum, status,
+		  r.id rid,roleName,roleDesc,
+		  p.id pid, permissionName, url
+		from
+		  role r
+			left outer join
+		  users_role ur
+		  on r.id = ur.roleId
+			left outer join
+		  users u
+		  on ur.userId = u.id
+		  left outer join role_permission rp
+		  on r.id = rp.roleId
+		  left outer join permission p on rp.permissionId = p.id
+		where
+			u.id= #{id}
+	</select>
+	<select id="findUserByIdAndAllRole" parameterType="int" resultMap="BaseResultMap">
+		select
+		  u.id uid,email,username,password,phoneNum,status,
+		  r.id rid,roleName,roleDesc
+		from
+		  role r,
+		  users u
+		where
+			u.id= #{id}
+		  and r.id not in (
+		  select
+			id
+		  from
+			role
+			  left outer join
+			users_role ur
+			on role.id = ur.roleId
+		  where
+			  userId=#{id}
+		);
+	</select>
+
+</mapper>

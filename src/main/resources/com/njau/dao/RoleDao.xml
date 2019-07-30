@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.njau.dao.RoleDao">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.njau.entity.Role">
+        <id column="rid" property="id" />
+        <result column="roleName" property="roleName" />
+        <result column="roleDesc" property="roleDesc" />
+        <collection property="permissions" resultMap="com.njau.dao.PermissionDao.BaseResultMap"/>
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, roleName, roleDesc
+    </sql>
+
+</mapper>

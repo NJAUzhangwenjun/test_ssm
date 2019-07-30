@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.njau.dao.OrdersDao">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.njau.entity.Orders">
+        <id column="id" property="id" />
+        <result column="orderNum" property="orderNum" />
+        <result column="orderTime" property="orderTime" />
+        <result column="peopleCount" property="peopleCount" />
+        <result column="orderDesc" property="orderDesc" />
+        <result column="payType" property="payType" />
+        <result column="orderStatus" property="orderStatus" />
+        <result column="productId" property="productId" />
+        <result column="memberId" property="memberId" />
+        <association property="product" column="pid" javaType="com.njau.entity.Product">
+            <id column="pid" property="id"/>
+            <result column="productNum" property="productNum" />
+            <result column="productName" property="productName" />
+            <result column="cityName" property="cityName" />
+            <result column="departureTime" property="departureTime" />
+            <result column="productPrice" property="productPrice" />
+            <result column="productDesc" property="productDesc" />
+            <result column="productStatus" property="productStatus" />
+        </association>
+        <association property="member" javaType="com.njau.entity.Member">
+            <id column="mid" property="id" />
+            <result column="mname" property="name" />
+            <result column="nickname" property="nickname" />
+            <result column="mphoneNum" property="phoneNum" />
+            <result column="email" property="email" />
+        </association>
+        <collection property="travellers" ofType="com.njau.entity.Traveller">
+            <id column="id" property="id" />
+            <result column="tname" property="name" />
+            <result column="tphoneNum" property="phoneNum" />
+            <result column="credentialsType" property="credentialsType" />
+            <result column="credentialsNum" property="credentialsNum" />
+            <result column="travellerType" property="travellerType" />
+            <result column="sex" property="sex" />
+        </collection>
+    </resultMap>
+
+    
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, orderNum, orderTime, peopleCount, orderDesc, payType, orderStatus, productId, memberId
+    </sql>
+	<select id="findAll" resultMap="BaseResultMap">
+        select * from orders , product where orders.productId=product.id;
+    </select>
+    <select id="findAllPage" resultMap="BaseResultMap">
+        select * from orders , product where orders.productId=product.id
+    </select>
+    
+	<select id="findById" resultMap="BaseResultMap" parameterType="int">
+    select
+       o.id , orderNum, orderTime, peopleCount, orderDesc, payType, orderStatus, productId, memberId,
+       m.id mid, m.name mname, nickname, m.phoneNum mphoneNum, email,
+       p.id pid, productNum, productName, cityName, departureTime, productPrice, productDesc, productStatus,
+       t.id tid, t.name tname, t.phoneNum tphoneNum, credentialsType, credentialsNum, travellerType, sex
+
+       from orders o left outer join member m on o.memberId = m.id
+         left outer join product p on o.productId = p.id
+         left outer join order_traveller ot on o.id = ot.orderId
+         left outer join traveller t on ot.travellerId = t.id
+        where o.id=#{id}
+    </select>
+
+</mapper>
