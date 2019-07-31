@@ -50,6 +50,9 @@ http://www.springframework.org/schema/tx/spring-tx.xsd">
 		<aop:advisor advice-ref="transactionInterceptor" pointcut-ref="pointcut"/>
 	</aop:config>
 	
+	<!--开启springAOP注解支持-->
+	<aop:aspectj-autoproxy proxy-target-class="true"/>
+	
 	<!--整合mybatisplug-->
 	
 	<bean class="com.baomidou.mybatisplus.extension.spring.MybatisSqlSessionFactoryBean" id="sqlSessionFactory">

@@ -43,6 +43,10 @@
     <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
   </listener>
   
+  <!--配置为了获取request对象的listener-->
+  <listener>
+    <listener-class>org.springframework.web.context.request.RequestContextListener</listener-class>
+  </listener>
   
   <!--前端过滤器-->
   <servlet>

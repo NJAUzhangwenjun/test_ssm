@@ -127,7 +127,7 @@ public class CodeGenerator {
          * 需要修改的地方，数据库表
          */
 
-        strategy.setInclude(new String[]{"users","role","permission",});
+        strategy.setInclude(new String[]{"syslog"});
         strategy.setControllerMappingHyphenStyle(true);
         // strategy.setTablePrefix(pc.getModuleName() + "_");
         mpg.setStrategy(strategy);
