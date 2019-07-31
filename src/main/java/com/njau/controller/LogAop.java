@@ -6,9 +6,9 @@ import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.After;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
-import org.aspectj.lang.annotation.Pointcut;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,84 +17,50 @@ import javax.servlet.http.HttpServletRequest;
 import java.lang.reflect.Method;
 import java.util.Date;
 
-/**
- * @author 张文军
- * @Description:日志记录的切面
- * @Company:南京农业大学工学院
- * @version:1.0
- * @date 2019/7/3112:40
- */
 @Component
 @Aspect
 public class LogAop {
 
     @Autowired
-    private SyslogService syslogService;
-
-    /**
-     * 获取之前需要在web.xml中配置一个监听器
-     */
-    @Autowired
     private HttpServletRequest request;
 
-    /**
-     * 切入点表达式
-     */
-    @Pointcut("execution(* com.njau.controller.*.*(..))")
-    private void pte() {
-    }
+    @Autowired
+    private SyslogService sysLogService;
 
-    /**
-     * 访问时间
-     */
-    private Date visitTime;
+    private Date visitTime; //开始时间
+    private Class clazz; //访问的类
+    private Method method;//访问的方法
 
-    /**
-     * 当前访问的类
-     */
-    private Class clazz;
+    //前置通知  主要是获取开始时间，执行的类是哪一个，执行的是哪一个方法
+    @Before("execution(* com.njau.controller.*.*(..))")
+    public void doBefore(JoinPoint jp) throws NoSuchMethodException {
+        visitTime = new Date();//当前时间就是开始访问的时间
+        clazz = jp.getTarget().getClass(); //具体要访问的类
+        String methodName = jp.getSignature().getName(); //获取访问的方法的名称
+        Object[] args = jp.getArgs();//获取访问的方法的参数
 
-
-    /**
-     * 当前访问的方法
-     */
-    private Method method;
-
-
-    /**
-     * 前置通知，拦截所有的Controller
-     *
-     * @param joinPoint
-     */
-    @Before("pte()")
-    public void doBefore(JoinPoint joinPoint) throws NoSuchMethodException {
-        visitTime = new Date();
-        clazz = joinPoint.getTarget().getClass();
-        String methodName = joinPoint.getSignature().getName();
-        if (joinPoint.getArgs() == null || joinPoint.getArgs().length == 0) {
-            method = clazz.getMethod(methodName);
+        //获取具体执行的方法的Method对象
+        if (args == null || args.length == 0) {
+            method = clazz.getMethod(methodName); //只能获取无参数的方法
         } else {
-            Class[] classArgs = new Class[joinPoint.getArgs().length];
-            for (int i = 0; i <classArgs.length; i++) {
-                classArgs[i] = joinPoint.getArgs()[i].getClass();
+            Class[] classArgs = new Class[args.length];
+            for (int i = 0; i < args.length; i++) {
+                classArgs[i] = args[i].getClass();
             }
-            method = clazz.getMethod(methodName, classArgs);
+            clazz.getMethod(methodName, classArgs);
         }
     }
 
-    /**
-     * 后置通知，拦截所有的Controller
-     *
-     * @param joinPoint
-     */
-    @After("pte()")
-    public void doAfter(JoinPoint joinPoint) {
-        //获取访问的时长
-        /**
-         * 执行时长
-         */
-        long executionTime = System.currentTimeMillis() - visitTime.getTime();
-        if (clazz != null && method != null && !method.getName().equals("toLogin") &&!method.getName().equals("login") && !method.getName().equals("failer") && clazz != LogAop.class) {
+    //后置通知
+    @After("execution(* com.njau.controller.*.*(..))")
+    public void doAfter(JoinPoint jp) throws Exception {
+        long time = System.currentTimeMillis() - visitTime.getTime(); //获取访问的时长
+
+        String url = "";
+        //获取url
+        if (clazz != null && method != null && !method.getName().equals("toLogin")
+                && !method.getName().equals("login") &&
+                !method.getName().equals("failer") && clazz != LogAop.class) {
             //1.获取类上的@RequestMapping("/orders")
             RequestMapping classAnnotation = (RequestMapping) clazz.getAnnotation(RequestMapping.class);
             if (classAnnotation != null) {
@@ -103,31 +69,19 @@ public class LogAop {
                 RequestMapping methodAnnotation = method.getAnnotation(RequestMapping.class);
                 if (methodAnnotation != null) {
                     String[] methodValue = methodAnnotation.value();
-                    /**
-                     * 访问资源url
-                     */
-                    String url = classValue[0] + methodValue[0];
+                    url = classValue[0] + methodValue[0];
 
                     //获取访问的ip
-                    /**
-                     * 访问IP
-                     */
                     String ip = request.getRemoteAddr();
 
-                    //获取当前操作的用户//从上下文中获了当前登录的用户
-                    SecurityContext context = (SecurityContext) request.getSession().getAttribute("SPRING_SECURITY_CONTEXT");
-//                    SecurityContext context = SecurityContextHolder.getContext();
+                    //获取当前操作的用户
+                    SecurityContext context = SecurityContextHolder.getContext();//从上下文中获了当前登录的用户
                     User user = (User) context.getAuthentication().getPrincipal();
-
-                    /**
-                     * 操作者用户名
-                     */
                     String username = user.getUsername();
-                    /**
-                     * 将日志相关信息封装到SysLog对象
-                     */
+
+                    //将日志相关信息封装到SysLog对象
                     Syslog sysLog = new Syslog();
-                    sysLog.setExecutionTime((int) executionTime);
+                    sysLog.setExecutionTime((int) time); //执行时长
                     sysLog.setIp(ip);
                     sysLog.setMethod("[类名] " + clazz.getName() + "[方法名] " + method.getName());
                     sysLog.setUrl(url);
@@ -135,10 +89,10 @@ public class LogAop {
                     sysLog.setVisitTime(visitTime);
 
                     //调用Service完成操作
-                    syslogService.save(sysLog);
+                    sysLogService.save(sysLog);
                 }
             }
         }
-    }
 
+    }
 }

@@ -122,6 +122,25 @@
                 </ul>
             </li>
 
+            <!-- 菜单5 -->
+            <li class="treeview">
+                <a href="#">
+                    <i class="fa fa-folder"></i> <span>日志管理</span>
+                    <span class="pull-right-container">
+                        <i class="fa fa-angle-left pull-right"></i>
+                    </span>
+                </a>
+                <ul class="treeview-menu">
+
+                    <li>
+                        <a href="/syslog/findAll.do?page=1&size=4">
+                            <i class="fa fa-circle-o"></i> 日志列表
+                        </a>
+                    </li>
+
+                </ul>
+            </li>
+
             </security:authorize>
         </ul>
     </section>
