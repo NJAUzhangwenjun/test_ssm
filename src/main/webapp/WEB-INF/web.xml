@@ -5,6 +5,7 @@
 <web-app>
   <display-name>Archetype Created Web Application</display-name>
   
+  
   <!--整合spring配置文件位置-->
   <context-param>
     <param-name>contextConfigLocation</param-name>
@@ -57,4 +58,24 @@
     <servlet-name>dispatcherServlet</servlet-name>
     <url-pattern>*.do</url-pattern>
   </servlet-mapping>
+  
+  <!--配置错误页面-->
+  <error-page>
+    <exception-type>java.lang.Throwable</exception-type>
+    <location>/main/toError.do</location>
+  </error-page>
+  <error-page>
+    <error-code>404</error-code>
+    <location>/main/toError.do</location>
+  </error-page><error-page>
+    <error-code>500</error-code>
+    <location>/main/toError.do</location>
+  </error-page><error-page>
+    <error-code>403</error-code>
+    <location>/main/toError.do</location>
+  </error-page><error-page>
+    <error-code>405</error-code>
+    <location>/main/toError.do</location>
+  </error-page>
+  
 </web-app>

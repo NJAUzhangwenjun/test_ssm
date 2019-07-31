@@ -21,4 +21,11 @@ public class Main {
     public String toMain() {
         return"main";
     }
+    /**
+     * 跳转到首页
+     */
+    @RequestMapping("toError.do")
+    public String toError404() {
+        return"error";
+    }
 }

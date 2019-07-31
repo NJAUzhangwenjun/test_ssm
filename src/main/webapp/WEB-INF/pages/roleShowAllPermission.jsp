@@ -54,59 +54,70 @@
     <!-- 导航侧栏 /-->
 
 
-    <!-- 内容区域 -->
+    <!-- 内容区域 /-->
     <div class="content-wrapper">
 
         <!-- 内容头部 -->
         <section class="content-header">
             <h1>
                 角色管理
-                <small>角色表单</small>
+                <small>角色详情</small>
             </h1>
             <ol class="breadcrumb">
-                <li><a href="${pageContext.request.contextPath}/index.jsp"><i
-                        class="fa fa-dashboard"></i> 首页</a></li>
+                <li><a href="${pageContext.request.contextPath}/index.jsp"><i class="fa fa-dashboard"></i> 首页</a></li>
                 <li><a href="${pageContext.request.contextPath}/role/findAll.do">角色管理</a></li>
-                <li class="active">角色表单</li>
+                <li class="active">用户详情</li>
             </ol>
         </section>
         <!-- 内容头部 /-->
 
-        <form action="${pageContext.request.contextPath}/role/save.do"
-              method="post">
-            <!-- 正文区域 -->
-            <section class="content"> <!--产品信息-->
+        <!-- 正文区域 -->
+        <section class="content">
 
-                <div class="panel panel-default">
-                    <div class="panel-heading">角色信息</div>
-                    <div class="row data-type">
+            <div class="box-body">
 
-                        <div class="col-md-2 title">角色名称</div>
-                        <div class="col-md-4 data">
-                            <input type="text" class="form-control" name="roleName"
-                                   placeholder="角色名称" value="">
-                        </div>
-                        <div class="col-md-2 title">角色描述</div>
-                        <div class="col-md-4 data">
-                            <input type="text" class="form-control" name="roleDesc"
-                                   placeholder="角色描述" value="">
-                        </div>
+                <!--树表格-->
+                <div class="tab-pane" id="tab-treetable">
+                    <table id="collapse-table" class="table table-bordered table-hover dataTable">
+                        <thead>
+                        <tr>
+                            <th>角色</th>
+                            <th>描述</th>
 
-
-                    </div>
+                        </tr>
+                        </thead>
+                        <tr data-tt-id="0">
+                            <td colspan="2">${role.roleName}</td>
+                        </tr>
+                        <tbody>
+                        <c:forEach items="${role.permissions}" var="permission" varStatus="vs">
+                            <tr data-tt-id="${vs.index+1}" data-tt-parent-id="0">
+                                <td>${permission.permissionName}</td>
+                                <td>${permission.url}</td>
+                            </tr>
+                            <%--<c:forEach items="${role.permissions}" var="p">
+                                <tr data-tt-id="1-1" data-tt-parent-id="${vs.index+1}">
+                                    <td>${p.permissionName}</td>
+                                    <td>${p.url}</td>
+                                </tr>
+                            </c:forEach>--%>
+                        </c:forEach>
+                        </tbody>
+                    </table>
                 </div>
-                <!--订单信息/--> <!--工具栏-->
-                <div class="box-tools text-center">
-                    <button type="submit" class="btn bg-maroon">保存</button>
-                    <button type="button" class="btn bg-default"
-                            onclick="history.back(-1);">返回
-                    </button>
-                </div>
-                <!--工具栏/--> </section>
-            <!-- 正文区域 /-->
-        </form>
+                <!--树表格/-->
+
+            </div>
+            <div class="box-tools text-center">
+                <button type="button" class="btn bg-default"
+                        onclick="history.back(-1);">返回
+                </button>
+            </div>
+        </section>
+        <!-- 正文区域 /-->
+
     </div>
-    <!-- 内容区域 /-->
+    <!-- 内容区域 -->
 
     <!-- 底部导航 -->
     <jsp:include page="footer.jsp"/>
@@ -181,8 +192,33 @@
     }
 
     $(document).ready(function () {
+
+        // 颜色选取器
+        $(".my-colorpicker1").colorpicker();
+        $(".my-colorpicker2").colorpicker();
+
+    });
+
+
+    $(document).ready(function () {
+        // 选择框
+        $(".select2").select2();
+    });
+
+    $(document).ready(function () {
+
+        /*table tree*/
+        $("#collapse-table").treetable({
+            expandable: true
+        });
+
+    });
+
+    $(document).ready(function () {
+
         // 激活导航位置
-        setSidebarActive("admin-index");
+        setSidebarActive("admin-dataform");
+
     });
 </script>
 </body>

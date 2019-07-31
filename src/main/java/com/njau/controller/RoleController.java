@@ -3,6 +3,7 @@ package com.njau.controller;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.njau.entity.Permission;
 import com.njau.entity.Role;
 import com.njau.service.RoleService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +11,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+
+import java.util.List;
 
 /**
  * <p>
@@ -44,6 +47,32 @@ public class RoleController {
     }
 
 
+    /**
+     * 根据id将role和未添加过的permission查询出来
+     * @param id
+     * @return
+     */
+    @RequestMapping("findRoleByIdAndAllPermission.do")
+    public String findRoleByIdAndAllPermission(int id,Model model) {
+        Role role = roleService.findRoleByIdAndAllPermission(id);
+        List<Permission> permissionList = role.getPermissions();
+        model.addAttribute("role", role);
+        model.addAttribute("permissionList", permissionList);
+        return "roleAddPermission";
+    }
+
+    /**
+     * 根据id查询角色和其拥有的permission
+     * @param id
+     * @return
+     */
+    @RequestMapping("findById.do")
+    public String findById(int id,Model model) {
+        Role role = roleService.findById(id);
+        model.addAttribute("role", role);
+        return "roleShowAllPermission";
+    }
+
     @RequestMapping("toAdd.do")
     public String toAdd() {
         return "roleAdd";
@@ -57,6 +86,18 @@ public class RoleController {
     @RequestMapping("save.do")
     public String save(Role role) {
         roleService.save(role);
+        return "redirect:findAll.do";
+    }
+
+    /**
+     * 为角色添加权限
+     * @param roleId
+     * @param permissionIds
+     * @return
+     */
+    @RequestMapping("addPermissionToRole.do")
+    public String addPermissionToRole(int roleId, @RequestParam(name = "ids") int[] permissionIds) {
+        roleService.addPermissionToRole(roleId,permissionIds);
         return "redirect:findAll.do";
     }
 

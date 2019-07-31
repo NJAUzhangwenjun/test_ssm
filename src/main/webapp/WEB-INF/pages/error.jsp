@@ -54,59 +54,48 @@
     <!-- 导航侧栏 /-->
 
 
-    <!-- 内容区域 -->
+    <!-- 内容区域 /-->
     <div class="content-wrapper">
-
-        <!-- 内容头部 -->
+        <!-- Content Header (Page header) -->
         <section class="content-header">
             <h1>
-                角色管理
-                <small>角色表单</small>
+                error 错误页面
             </h1>
+
             <ol class="breadcrumb">
-                <li><a href="${pageContext.request.contextPath}/index.jsp"><i
-                        class="fa fa-dashboard"></i> 首页</a></li>
-                <li><a href="${pageContext.request.contextPath}/role/findAll.do">角色管理</a></li>
-                <li class="active">角色表单</li>
+                <li><a href="/index.jsp"><i class="fa fa-dashboard"></i> 首页</a></li>
+                <li class="active">error 错误</li>
             </ol>
+
         </section>
-        <!-- 内容头部 /-->
 
-        <form action="${pageContext.request.contextPath}/role/save.do"
-              method="post">
-            <!-- 正文区域 -->
-            <section class="content"> <!--产品信息-->
+        <!-- Main content -->
+        <section class="content">
+            <div class="error-page">
+                <h2 class="headline text-yellow"> error</h2>
 
-                <div class="panel panel-default">
-                    <div class="panel-heading">角色信息</div>
-                    <div class="row data-type">
+                <div class="error-content">
+                    <h3><i class="fa fa-warning text-yellow"></i> Oops! 页面没有找到.</h3>
 
-                        <div class="col-md-2 title">角色名称</div>
-                        <div class="col-md-4 data">
-                            <input type="text" class="form-control" name="roleName"
-                                   placeholder="角色名称" value="">
-                        </div>
-                        <div class="col-md-2 title">角色描述</div>
-                        <div class="col-md-4 data">
-                            <input type="text" class="form-control" name="roleDesc"
-                                   placeholder="角色描述" value="">
-                        </div>
+                    <p>
+                        没有找到你请求的页面, 你可以 <a href="/index.jsp">返回到首页</a>
+                    </p>
 
-
+                    <div class="box-tools text-center">
+                        <button type="button" class="btn bg-default"
+                                onclick="history.back(-1);">返回上一页
+                        </button>
                     </div>
                 </div>
-                <!--订单信息/--> <!--工具栏-->
-                <div class="box-tools text-center">
-                    <button type="submit" class="btn bg-maroon">保存</button>
-                    <button type="button" class="btn bg-default"
-                            onclick="history.back(-1);">返回
-                    </button>
-                </div>
-                <!--工具栏/--> </section>
-            <!-- 正文区域 /-->
-        </form>
+                <!-- /.error-content -->
+            </div>
+            <!-- /.error-page -->
+        </section>
+        <!-- /.content -->
     </div>
-    <!-- 内容区域 /-->
+
+
+    <!-- 内容区域 -->
 
     <!-- 底部导航 -->
     <jsp:include page="footer.jsp"/>
@@ -161,13 +150,13 @@
 <script src="/statics/plugins/bootstrap-datetimepicker/locales/bootstrap-datetimepicker.zh-CN.js"></script>
 <script>
 
-    $(document).ready(function () {
+    $(document).ready(function() {
         // 选择框
         $(".select2").select2();
 
         // WYSIHTML5编辑器
         $(".textarea").wysihtml5({
-            locale: 'zh-CN'
+            locale : 'zh-CN'
         });
     });
 
@@ -180,7 +169,7 @@
         }
     }
 
-    $(document).ready(function () {
+    $(document).ready(function() {
         // 激活导航位置
         setSidebarActive("admin-index");
     });

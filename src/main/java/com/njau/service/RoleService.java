@@ -13,4 +13,9 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface RoleService extends IService<Role> {
 
+    Role findRoleByIdAndAllPermission(int id);
+
+    void addPermissionToRole(int roleId, int[] permissionIds);
+
+    Role findById(int id);
 }

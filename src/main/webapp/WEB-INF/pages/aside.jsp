@@ -1,5 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
-         pageEncoding="UTF-8" %>
+         pageEncoding="UTF-8" isELIgnored="false" %>
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@taglib prefix="security" uri="http://www.springframework.org/security/tags" %>
 <aside class="main-sidebar">
     <!-- sidebar: style can be found in sidebar.less -->
     <section class="sidebar">
@@ -9,7 +11,7 @@
                 <img src="/statics/img/user2-160x160.jpg" class="img-circle" alt="User Image">
             </div>
             <div class="pull-left info">
-                <p>张文军</p>
+                <p><security:authentication property="principal.username"/></p>
                 <a href="#"><i class="fa fa-circle text-success"></i> 在线</a>
             </div>
         </div>
@@ -60,6 +62,9 @@
             </li>
 
             <!-- 菜单2 -->
+
+            <%--只有是SUPER的角色的用户才能访问到--%>
+            <security:authorize access="hasRole('SUPER')" >
 
             <li class="treeview">
                 <a href="#">
@@ -116,6 +121,8 @@
 
                 </ul>
             </li>
+
+            </security:authorize>
         </ul>
     </section>
     <!-- /.sidebar -->

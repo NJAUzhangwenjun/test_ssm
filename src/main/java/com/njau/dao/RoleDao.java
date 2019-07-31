@@ -2,6 +2,7 @@ package com.njau.dao;
 
 import com.njau.entity.Role;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import org.apache.ibatis.annotations.Param;
 
 /**
  * <p>
@@ -13,4 +14,9 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
  */
 public interface RoleDao extends BaseMapper<Role> {
 
+    Role findRoleByIdAndAllPermission(int id) ;
+
+    void addPermissionToRole(@Param("roleId") int roleId,@Param("permissionId") int permissionId);
+
+    Role findById(int id);
 }

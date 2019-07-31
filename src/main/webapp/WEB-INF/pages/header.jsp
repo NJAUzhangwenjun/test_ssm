@@ -1,5 +1,9 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
-         pageEncoding="UTF-8" %>
+         pageEncoding="UTF-8" isELIgnored="false" %>
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@taglib prefix="security" uri="http://www.springframework.org/security/tags" %>
+<%@page import="java.text.SimpleDateFormat"%>
+<%@page import="java.util.*"%>
 <!-- 页面头部 -->
 <header class="main-header">
 
@@ -25,7 +29,9 @@
                 <li class="dropdown user user-menu">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                         <img src="/statics/img/user2-160x160.jpg" class="user-image" alt="User Image">
-                        <span class="hidden-xs">张文军</span>
+                        <span class="hidden-xs">
+                            <security:authentication property="principal.username"/>
+                        </span>
                     </a>
                     <ul class="dropdown-menu">
                         <!-- User image -->
@@ -33,11 +39,18 @@
                             <img src="/statics/img/user2-160x160.jpg" class="img-circle" alt="User Image">
 
                             <p>
-                                张文军 - 数据管理员
-                                <small>最后登录 11:20AM</small>
+                                <%--获取当前时间并显示--%>
+                                <security:authentication property="principal.username"/> - 数据管理员
+
+                                <%
+                                    Date d = new Date();
+                                    SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                                    String now = df.format(d);
+                                %>
+                                <small>最后登录:<%=now %></small>
                             </p>
                         </li>
-                        <li class="user-body">
+                      <%--  <li class="user-body">
                             <div class="row">
                                 <div class="col-xs-4 text-center">
                                     <a href="#">个人主页</a>
@@ -49,13 +62,13 @@
                                     <a href="#">权限分配</a>
                                 </div>
                             </div>
-                        </li>
+                        </li>--%>
 
                         <!-- Menu Footer-->
                         <li class="user-footer">
-                            <div class="pull-left">
+                           <%-- <div class="pull-left">
                                 <a href="#" class="btn btn-default btn-flat">修改密码</a>
-                            </div>
+                            </div>--%>
                             <div class="pull-right">
                                 <a href="/logout.do" class="btn btn-default btn-flat">退出</a>
                             </div>
